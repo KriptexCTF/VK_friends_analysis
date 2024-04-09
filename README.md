@@ -1,4 +1,4 @@
-# The project is a test project and does not use personal or proprietary user information
+# The project is a test and does not use personal or proprietary user information
 
 For the script to work you need to get a vk access token
 
