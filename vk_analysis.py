@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import networkx as nx
+import time
 from vk_api import *
 
 def get_name_vk(id):
@@ -25,21 +26,30 @@ def find_linked(edges, arr):
 					break
 	return edges
 
-access_token = "" #Your VK access token
-while(access_token == ""):print("Enter valid access_token!");access_token = input(":>")
+try:
+	access_token = ""
+	access_token = open("token", 'r').read()
+except FileNotFoundError:
+	print("Token file not found!")
+while(access_token == ""):print("Enter valid access_token!");access_token = input(":>");open("token", "w").write(access_token)
 vk_session = vk_api.VkApi(token=access_token)
 try:
 	vk = vk_session.get_api()
 	nickname = input("Enter nickname: ")
 	main_id = vk.utils.resolveScreenName(screen_name=nickname)['object_id']
 	friends = vk.friends.get(user_id=main_id)
-except Exception:
+except ApiError:
+	open("token", "w").write("")
+	print("Token not valid!")
+	exit()
+except OSError:
 	print("No enternet connection!\nOR raise limit")
 	exit()
 arr, nodes, edges = [], [], []
 user_dict = {}
 nodes.append(get_name_vk(main_id))
 for id in friends['items']:
+	time.sleep(0.5)
 	user_get = vk.users.get(user_ids=(id))
 	user_get = user_get[0]
 	try:
